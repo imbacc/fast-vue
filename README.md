@@ -1,4 +1,4 @@
-# fastweb
+# fast-vue
 
 > A Vue.js project
 
