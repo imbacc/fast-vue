@@ -1,4 +1,4 @@
-import http_request from '../../request/api_request'	//导入API方法
+import http_request from '../../tools/http_action.js'	//导入API方法
 
 const TOKEN = localStorage.getItem('token') || false //获取TOKEN缓存
 const USER_INFO = localStorage.getItem('user_info') || false //获取USERINFO缓存

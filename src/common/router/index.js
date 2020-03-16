@@ -1,29 +1,29 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import lc_router from './module/lc_router.js';
-import dzf_router from './module/dzf_router.js';
+import test_router from './module/test_router.js';
 
 Vue.use(Router)
 
 const router = new Router({
+    mode: 'history',
     routes: [
       {
         path: '/',
-        redirect: 'test'
+        redirect: '/home'
       },
       {
-       path: '/',
+       path: '/home',
        name: 'home',
        component: () => import('@/view/index/index')
       },
-      ...lc_router,
-      ...dzf_router,
+      ...test_router,
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  // ...前置守卫
+  // ...前置守卫 一定要next !!!
+  next()
 })
 
 router.afterEach((to, from) => {

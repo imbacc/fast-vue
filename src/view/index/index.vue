@@ -1,6 +1,5 @@
 <template>
 	<div class="index_index">
-		111111111111111
 		{{key}}
 	</div>
 </template>
@@ -9,7 +8,7 @@
 	export default {
 		data() {
 			return {
-				key: 'i am  key'
+				key: '111111111111111ddddddddddddddddddd'
 			}
 		},
 		created() {

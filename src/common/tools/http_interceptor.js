@@ -1,3 +1,6 @@
+/**
+ * 拦截请求
+ */
 import axios from 'axios'
 
 var http = axios.create({
