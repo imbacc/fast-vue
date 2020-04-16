@@ -14,6 +14,7 @@ router.beforeEach((to, from, next) => {
   if(!cfg.check_login){
 	  console.log('cfg.check_login=',cfg.check_login)
   }
+  next()
 })
 
 router.afterEach((to, from) => {
