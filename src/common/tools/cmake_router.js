@@ -4,7 +4,7 @@ import cfg from '../config/cfg.js';
 
 //检查用户登录状态
 const check_login = async () => {
-	let is_login = uni.getStorageSync('token') || false
+	let is_login =  localStorage.getItem('token') || false
 	if(is_login) return true
 	return await vuex.dispatch('check_login')
 }

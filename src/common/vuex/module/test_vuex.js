@@ -10,7 +10,7 @@ const mutations = {
 	 * 0是状态属性名称
 	 * 1是赋予状态属性的值
 	 */
-	set_vuex_lc(state, info) {
+	set_vuex_test(state, info) {
 		state[info[0]] = info[1]
 		console.log(info)
 	},

@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import api_config from '../config/api'	//导入API
-
 Vue.use(Vuex)
 
 //vuex 模块

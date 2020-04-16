@@ -7,9 +7,7 @@ var http = axios.create({
     timeout: 6000
 })
 
-const dev = process.env.NODE_ENV === 'development'
 const console_msg = (msg = '网络异常') => console.log(msg)
-const log_msg = (msg) => dev ? console_msg(msg) : console_msg()
 
 // 添加请求拦截器
 http.interceptors.request.use((config) => {
@@ -23,7 +21,7 @@ http.interceptors.request.use((config) => {
   // config.headers = token ? head_option : {}
 
 
-	log_msg("【config】 " + JSON.stringify(config))
+	console_msg("【config】 " + JSON.stringify(config))
 
 	return config
 }, (error) => {
@@ -68,7 +66,7 @@ http.interceptors.response.use((res) => {
 
     // if(res.data.hasOwnProperty('result')) return res.data
 
-    log_msg("【response】 " + JSON.stringify(res))
+    console_msg("【response】 " + JSON.stringify(res))
 
     return res
 }, (error) => {
