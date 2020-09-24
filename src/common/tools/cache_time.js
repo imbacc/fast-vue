@@ -54,8 +54,14 @@ const get_cache = (key) => {
 	return false
 }
 
+const del_cache = (key) => {
+  localStorage.removeItem(key)
+  localStorage.removeItem(key + '_time')
+}
+
 
 export default {
 	set_cache,
-	get_cache
+	get_cache,
+  del_cache
 }

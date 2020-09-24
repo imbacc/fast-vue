@@ -3,25 +3,30 @@
  */
 import axios from 'axios'
 
-var http = axios.create({
-    timeout: 6000
+const http = axios.create({
+    baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+    timeout: 9000
 })
 
-const console_msg = (msg = '网络异常') => console.log(msg)
+const env = process.env.NODE_ENV
+const error_msg = (msg = '网络异常') => console.log(msg)
+const record = {}
 
 // 添加请求拦截器
 http.interceptors.request.use((config) => {
 	// 在发送请求之前做些什么
 
-  // let token = localStorage.getItem("token") || ""
-  // if(token instanceof String) token = JSON.parse(token)
-  // let head_option = {Authorization: `Bearer ${token}`}
+  if (config.data && config.data._rollback) {
+    if (record[config.url]) return Promise.reject(new Error(`_roolback_${config.url}`))
+    record[config.url] = true
+  }
 
-  // //添加通用参数 Token
-  // config.headers = token ? head_option : {}
+  // config.headers['Content-Type'] = 'application/json; charset=UTF-8'
 
+  let token = localStorage.getItem('token') || false
+  if (token) config.headers['Authorization'] = ''
 
-	console_msg("【config】 " + JSON.stringify(config))
+	// console.log("【config】 " + JSON.stringify(config))
 
 	return config
 }, (error) => {
@@ -30,47 +35,66 @@ http.interceptors.request.use((config) => {
 })
 
 // 添加响应拦截器
-http.interceptors.response.use((res) => {
-	// 对响应数据做点什么
+http.interceptors.response.use((response) => {
+    // 对响应数据做点什么
 
-    // if(res.statusCode === 401){
-    //   error_msg("登录信息已失效")
-    //   uni.clearStorage()
-    //   uni.reLaunch({url:'/pages/login/login',animationType:'slide-in-bottom'})
-    //   return 'false'
-    // }
+    // console.log("【response】 " + response)
 
-    // if(res.statusCode === 503){
-    //   error_msg("503错误")
-    //   return 'false'
-    // }
+    if (response.status === 401) {
+      // removeToken
+      window.location = '/login'
+      return
+    }
+    const res = response.data
+    if (res.status === 401) {
+      error_msg('401 error')
+      return Boolean(false)
+    }
 
-    // if(res.errMsg.toString().indexOf("fail") !== -1 || res.statusCode === 0){
-    //   error_msg('网络异常')
-    //   return 'false'
-    // }
+    if (res.status === 503) {
+      error_msg('503 error')
+      return Boolean(false)
+    }
 
-    // if(res.data.hasOwnProperty("error")){
-    //   const error = res.data.error
-    //   if(error.code === "sys_error"){
-    //     error_msg('网络异常')
-    //     console.error('服务报错:',error.message)
-    //     return 'false'
-    //   }
-    //   if(error.hasOwnProperty('message')){
-    //     error_msg(error.message)
-    //     console.error('拦截通知:',error.message)
-    //     return 'false'
-    //   }
-    // }
-
-    // if(res.data.hasOwnProperty('result')) return res.data
-
-    console_msg("【response】 " + JSON.stringify(res))
+    if (res.data && res.data.error) {
+      error_msg('Network fail', res.data.error)
+      return Boolean(false)
+    }
 
     return res
 }, (error) => {
 	// 对响应错误做点什么
+	const err = error.toString()
+
+  if (env === 'development') console.log(err) // for debug
+
+	// 回滚中断请求
+	if (err.indexOf('_roolback_') !== -1) {
+	  const key = err.replace('_roolback_', '')
+	  delete record[key]
+	  return Boolean(false)
+	}
+
+	if (err.indexOf('code 500') !== -1) {
+	  error_msg('500 error')
+	  return Boolean(false)
+	}
+
+	if (err.indexOf('code 503') !== -1) {
+	  error_msg('503 error')
+	  return Boolean(false)
+	}
+
+	if (err.indexOf('code 401') !== -1) {
+	  error_msg('401 error')
+	  return Boolean(false)
+	}
+
+	if (error.toString().indexOf('Error') !== -1) {
+	  error_msg('Network anomaly')
+	  return Boolean(false)
+	}
+
 	return Promise.reject(error)
 })
 

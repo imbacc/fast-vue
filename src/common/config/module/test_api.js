@@ -1,3 +1,3 @@
 export default {
-   xxx: 'xxxx',
+	get_test: 'api/get_test', //xxx
 }
